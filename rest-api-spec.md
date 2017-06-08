@@ -18,28 +18,46 @@ etc.
 
 ## Special Considerations
 
+  * Journals resource?
   * "Date or date range of classes taught?" what?
   * what do we all want to be able to filter titles by in first iteration?
   * a 'mock' parameter for mock data?
   * This is a read-only API, only GET and OPTIONS
   * Vertical scaling, general speed
   * Security, authentication
-  * Do you think we'll have to worry about disambiguation for same-titles?
-  * Caching; cache specific queries for re-use... but how does cache update?
-  * Publisher and other discrepancies
+  * Caching; cache specific queries for re-use. Flask Cache. "The current API
+    uses Flask-Cache, backed by Redis, which worked well enough. This will
+    probably be necessary again, since the process of generating the "ranking"
+    lists involves a couple of Elasticsearch queries that can be fairly
+    expensive."
+  * Publisher and other discrepancies which occur when comparing multiple
+    sources
+  * We will be expanding eventually to have "school portals" which has school
+    admin that manages school portal users and the content available therein.
 
 ## Technologies
 
 The technologies I've selected for this project are:
 
-  * Flask, flask-restful
+  * Flask, flask-restful: great ORM, @davidmcclure and @lily-mayfield know it
+    very well, has great eco, I'm very familiar with building REST this way,
+    including all the fun Flask addons!
   * Docker
-  * Celery
-  * Postgres: love the json features. Fast! can index by syllabi_by_field > id!
-    This can help with caching reponses.
-  * Travis CI
+  * Celery: Gotta background those intensive tasks, but also to do things
+    concurrently!
+  * Redis: to work with celery and flask-cache
+  * Postgres: May prove useful eventually.
+  * Travis CI: Gotta test that software!
   * JSON
   * Python 3
+  * Flask-Cache
+  * An Elasticsearch client... (plug into SQLAlchemy ORM)
+
+## Consistency Handbook
+
+  * If you're doing a filter on a resource by that resource, e.g., filtering by
+    title on the title resource, this does a like match with a string instead of
+    exact match with an ID.
 
 ## Resources
 
@@ -69,6 +87,22 @@ Example response:
         "publisher": "publisherid",
         "publish_date": 20170506,
         "description": "blah blah lorem ipsum, you know the drill",
+        "journal_meta": {
+            "journal": {
+                "title": "journal title",
+                "abbreviated_title": "journal abbreviated title",
+                "identifier": "journal identifier"
+            },
+            "issue": {
+                "volume": "string or integer?",
+                "number": integer,
+                "chronology": ...
+            },
+            "article": {
+                "identifier": "idk",
+                "pagination": "idk...",
+            }
+        },
         "syllabi_by_field": [
             {
                 "id": "fieldid",
@@ -85,18 +119,35 @@ Example response:
         "assigned_with": ["titleid", "yetanothertitleid"],
     }
 
+`journal_meta` is only included when the title entity represents an article.
+
 #### `GET /v1/titles.json`
 
 Use _queryargs_ to request a list of title entities:
 
-  * offset:
-  * limit:
-  * desc/asc? "order=asc" or "order=desc"
-  * hasopen (has open access resources)  this won't be implemented in first
-    iteration?
-  * publish date (last 50 years, last 10 years) "pubdate=last50" or
-    "pubdate=last10?" caching bonuses there, but what if we just did
-    variable date searches
+  * offset: ...
+  * limit: the max number of results to include
+  * order: either `asc` or `desc`
+  * `pub_date_start`:
+  * `pub_date_end`: Defaults to "now."
+  * `assigned_date_start`:
+  * `assigned_date_end`: Defaults to "now."
+  * `titles`: A list of titles to do like-matching on. Can be just one, or many!
+    For example, `...&titles=[Direct%20Acti, Fragments%20of%20an%20Anar']
+  * `authors`: A list of authors to match, e.g., `...&authors=[id1,id2]`.
+    May be a list of one element.
+  * `schools`: A list of schools to match, e.g., `...&schools=[id4,id5]`.
+    May be a list of one element.
+  * `fields`: A list of fields to match, e.g., `...&fields=[id2,id4]`.
+    May be a list of one element.
+  * `countries`: A list of countries to match, e.g., `...&countries=[id2,id4]`.
+    May be a list of one element.
+  * `publisher`: Assuming there's never multiple publishers for one item, just a
+    single id, e.g., `...&publisher=id`.
+
+Note on `assigned_date_` vs. `pub_date_`: `assigned_date` is when the materials
+were taught, in regard to a syllabus, and `pub_date` is in regard to when the
+publisher released the title.
 
 Example request:
 
