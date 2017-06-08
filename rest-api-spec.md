@@ -32,9 +32,7 @@ etc.
 
 The technologies I've selected for this project are:
 
-  * Django Rest Framework: I think this is a good choice for a robust API such
-    as the Open Syllabus Project's. Although I'm a master of flask-restful...
-    Could be tipped either way on this.
+  * Flask, flask-restful
   * Docker
   * Celery
   * Postgres: love the json features. Fast! can index by syllabi_by_field > id!
