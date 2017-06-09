@@ -133,7 +133,7 @@ Use _queryargs_ to request a list of title entities:
   * `assigned_date_start`:
   * `assigned_date_end`: Defaults to "now."
   * `titles`: A list of titles to do like-matching on. Can be just one, or many!
-    For example, `...&titles=[Direct%20Acti, Fragments%20of%20an%20Anar']
+    For example, `...&titles=[Direct%20Acti,Fragments%20of%20an%20Anar]
   * `authors`: A list of authors to match, e.g., `...&authors=[id1,id2]`.
     May be a list of one element.
   * `schools`: A list of schools to match, e.g., `...&schools=[id4,id5]`.
