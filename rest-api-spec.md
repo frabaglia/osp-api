@@ -11,10 +11,13 @@ Standards](https://github.com/WhiteHouse/api-standards).
 Remember: this is just a sloppy draft, so feel free to make suggestions, PRs,
 etc.
 
-## Terminology
+## Terminology, Notes
 
   * Doc, Syllabi:
   * Title:
+
+I've marked certain sections as  incomplete because I need to revise those
+sections, I'm attacking each resource one at a time, starting with `Titles`.
 
 ## Special Considerations
 
@@ -119,7 +122,7 @@ Example response:
         "assigned_with": ["titleid", "yetanothertitleid"],
     }
 
-`journal_meta` is only included when the title entity represents an article.
+Note: `journal_meta` is only included when the title entity represents an article.
 
 #### `GET /v1/titles.json`
 
@@ -242,19 +245,24 @@ Example response:
 
 #### `GET /v1/authors.json`
 
+**incomplete**
+
 Request authors and query for authors based these criteria, using query args:
 
-    * Author
-    * School
-    * Field
-    * Country
-    * offset
-    * limit
-    * asc/desc/etc
+  * Author
+  * Schools
+  * Fields
+  * Countries
+  * offset: ...
+  * limit: the max number of results to include
+  * order: either `asc` or `desc`
+
 
 ...
 
 ### Schools (/v1/schools)
+
+**incomplete**
 
 ...
 
@@ -281,6 +289,8 @@ Request a specific school entity by ID:
 
 #### `GET /v1/schools.json`
 
+**incomplete**
+
 Request school entities based on these criteria, using query args:
 
     * School name (like match?)
@@ -293,9 +303,13 @@ Request school entities based on these criteria, using query args:
 
 ### Fields (/v1/fields)
 
+**incomplete**
+
 Fields of study...
 
 #### `GET /v1/fields.json`
+
+**incomplete**
 
 Request field entities based on these criteria, using query args:
 
@@ -348,6 +362,8 @@ Example response:
 
 #### `GET /v1/countries.json`
 
+**incomplete**
+
 Request a list of country entities which match criteria specified by these query
 args:
 
@@ -360,6 +376,7 @@ args:
 
 ### Publishers (/v1/publishers)
 
+**incomplete**
 
 #### `GET /v1/publishers/someid.json`
 
@@ -374,6 +391,8 @@ Example response:
     }
 
 #### `GET /v1/publishers.json`
+
+**incomplete**
 
 Request a list of publisher entities which match criteria specified by these query
 args:
