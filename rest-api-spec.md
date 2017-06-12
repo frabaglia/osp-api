@@ -61,6 +61,9 @@ The technologies I've selected for this project are:
   * If you're doing a filter on a resource by that resource, e.g., filtering by
     title on the title resource, this does a like match with a string instead of
     exact match with an ID.
+  * Lists in qargs are done `&list=like,this`.
+  * Validate JSON and GET requests with a sophisticated wrapper that uses
+    `marshmallow`.
 
 ## Resources
 
@@ -72,6 +75,11 @@ The Syllabi API provides six different resources:
   * Fields
   * Countries
   * Publishers
+
+### Status
+
+Health-check endpoint to provide a simple response indicating the API instance
+is alive and well.
 
 ### Titles (/v1/titles)
 
@@ -136,14 +144,14 @@ Use _queryargs_ to request a list of title entities:
   * `assigned_date_start`:
   * `assigned_date_end`: Defaults to "now."
   * `titles`: A list of titles to do like-matching on. Can be just one, or many!
-    For example, `...&titles=[Direct%20Acti,Fragments%20of%20an%20Anar]
-  * `authors`: A list of authors to match, e.g., `...&authors=[id1,id2]`.
+    For example, `...&titles=Red%20Fish,Horton%20Hears%20a`.
+  * `authors`: A list of authors to match, e.g., `...&authors=id1,id2`.
     May be a list of one element.
-  * `schools`: A list of schools to match, e.g., `...&schools=[id4,id5]`.
+  * `schools`: A list of schools to match, e.g., `...&schools=id4,id5`.
     May be a list of one element.
-  * `fields`: A list of fields to match, e.g., `...&fields=[id2,id4]`.
+  * `fields`: A list of fields to match, e.g., `...&fields=id2,id4`.
     May be a list of one element.
-  * `countries`: A list of countries to match, e.g., `...&countries=[id2,id4]`.
+  * `countries`: A list of countries to match, e.g., `...&countries=id2,id4`.
     May be a list of one element.
   * `publisher`: Assuming there's never multiple publishers for one item, just a
     single id, e.g., `...&publisher=id`.
