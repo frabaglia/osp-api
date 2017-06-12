@@ -9,7 +9,7 @@ services:
     ports:
       - '6379:6379'
 
-  website:
+  api:
     build: .
     command: >
       gunicorn -b 0.0.0.0:8000
@@ -22,14 +22,6 @@ services:
       - '.:/osp_api'
     ports:
       - '8000:8000'
-    links:
-        - redis
-
-  celery:
-    build: .
-    command: celery worker -l info -A osp_api.tasks.celery --loglevel=debug
-    volumes:
-      - '.:/osp_api'
     links:
         - redis
 

@@ -8,7 +8,6 @@ from webargs.fields import (DateTime, Str, Int, List)
 from flask_cache import Cache
 
 from . import config
-from . import tasks
 from . import util
 
 
@@ -51,10 +50,13 @@ class Title(flask_restful.Resource):
 
 
 class TitleList(flask_restful.Resource):
-    """List of academic work, texts; journal article, book, paper, etc.
+    """List of titles; academic work, texts, journal article, book, paper, etc.
 
     NOT a Syllabus. A title is something that would be cited by other
     titles, or used as material in a Syllabus.
+
+    See Also:
+        :class:`Title` (resource).
 
     """
 
@@ -96,56 +98,10 @@ class TitleList(flask_restful.Resource):
 
         """
 
-        return {
-            'task': {
-                'task_id': tasks.query_titles.delay(args).id,
-                # NOTE: thinking of note including below for this,
-                # unlike in TaskStatus, because it's bad info once
-                # it's cached...
-                #'state': 'PENDING',
-            },
-        }
-
-
-class TaskStatus(flask_restful.Resource):
-    """Check on the status of a Celery task.
-
-    """
-
-    # FIXME: this isn't  returning task result anymore!
-    def get(self, task_id):
-        """Get a task from Celery by task_id.
-
-        Returns:
-            json "task" entity: ...
-
-        """
-
-        # first get the task from celery by task id...
-        task = tasks.query_titles.AsyncResult(task_id)  # FIXME: this may go wrong if no such id; research!
-
-        # this is the basic json task entity
-        response = {
-            'task': {
-                'id': task.id,
-                'state': task.state,
-                #'info': task.info,
-            }
-        }
-
-        # modify the response based on the task status
-        if task.state == 'PENDING':
-            # job did not start yet!
-            pass
-        # FIXME: make a less sloppy condition
-        elif task.state != 'FAILURE' and 'result' in task.info:
-            # in progress or done!
-            response['task']['result'] = task.info['result']
-        else:
-            # something went wrong in background job
-            pass
-
-        return response
+        # FIXME: elasticsearch. this is but a demo of caching.
+        import random
+        args['random'] = random.randint(0, 1000)
+        return args
 
 
 @parser.error_handler
@@ -168,4 +124,3 @@ def handle_arg_schema_error(error):
 # Map resources to routes!
 api.add_resource(TitleList, '/titles')
 api.add_resource(Title, '/titles/<int:title_id>')
-api.add_resource(TaskStatus, '/tasks/<task_id>')
