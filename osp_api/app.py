@@ -9,6 +9,7 @@ from flask_cache import Cache
 
 from . import config
 from . import tasks
+from . import util
 
 
 __API_VERSION__ = 'v1'
@@ -57,15 +58,14 @@ class TitleList(flask_restful.Resource):
 
     """
 
-    # FIXME: flask_cache issue: this method always produces the same task_id...
-    # I believe I will need to create custom key function. If I put the cache
-    # decorator last then it gives a new task ID every time (regardless of args).
+    # FIXME: flask_cache issue: if the query args are in a different order it   
+    # creates a new cache entry...
     #
     # TODO: This use_args dict is applicable to pretty much all resources that
     # can be queried (returning a list of entities) so KISS
     #
     # TODO: Need to invalidate based on args that aren't in the schema?
-    @cache.memoize()
+    @cache.cached(key_prefix=util.make_cache_key)
     @use_args(
         dict(
             offset = Int(validate=lambda n: n >= 0),
